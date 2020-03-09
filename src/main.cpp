@@ -9,6 +9,7 @@
 #include<set>
 #include<unordered_set>
 #include "line.h"
+
 using namespace std;
 set<pair<double, double>> pointss;
 unordered_set<pair<double, double>,Hash_pair> pointu_set;
