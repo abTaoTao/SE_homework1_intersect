@@ -6,9 +6,11 @@
 #include<map>
 #include<vector>
 #include<cmath>
+#include<set>
 #include "line.h"
 using namespace std;
 map<pair<double, double>, int> point2count;
+set<pair<double, double>> pointss;
 vector<Line> lines;
 vector<Circle> circles;
 int main(int argc, char* argv[]) {
@@ -23,11 +25,13 @@ int main(int argc, char* argv[]) {
 			out_file.open(argv[i+1]);
 		}
 	}
+	//in_file.open("input6.txt");
+	//out_file.open("output.txt");
 	int n;
 	in_file >> n;
 	for (i = 0; i < n; ++i) {
 		char type;
-		long long  x1, y1, x2, y2;
+		double  x1, y1, x2, y2;
 		in_file >> type;
 		if (type == 'L') {
 			in_file >> x1 >> y1 >> x2 >> y2;
@@ -38,9 +42,9 @@ int main(int argc, char* argv[]) {
 					continue;
 				pair<double, double> point = it.getInterSect(line);
 				//printf("直线与直线交点：%lf %lf\n", point.first, point.second);
-				if (point2count.count(point) < 1) {
-					point2count.insert(pair<pair<double, double>, int>(point, 1));
-				}
+				//point2count.insert(pair<pair<double, double>, int>(point, 1));
+				//point2count[point] = 1;
+				pointss.insert(point);
 			}
 			for (auto it : circles) {
 				it.getIntersectWithLine(line);
@@ -48,7 +52,7 @@ int main(int argc, char* argv[]) {
 			lines.push_back(line);
 		}
 		else if (type == 'C') {
-			long long x0, y0, r0;
+			double x0, y0, r0;
 			in_file >> x0 >> y0 >> r0;
 			Circle circ;
 			circ.setCircle(x0, y0, r0);
@@ -61,6 +65,8 @@ int main(int argc, char* argv[]) {
 			circles.push_back(circ);
 		}
 	}
-	printf("%d\n", point2count.size());
-	out_file << point2count.size();
+	//printf("%d\n", point2count.size());
+	printf("%d\n", pointss.size());
+	out_file << pointss.size();
+	//out_file << point2count.size();
 }

@@ -7,6 +7,7 @@
 #include<stdlib.h>
 #include<string>
 #include<map>
+#include<set>
 #include<vector>
 #include<cmath>
 
@@ -16,14 +17,14 @@ using namespace std;
 class Line {
 private:
 	//Ax + By + C = 0;
-	long long A, B, C;
+	double A, B, C;
 public:
-	void SetLine(long long x1, long long y1, long long x2, long long y2) {
+	void SetLine(double x1, double y1, double x2, double y2) {
 		A = y2 - y1;
 		B = x1 - x2;
 		C = x2 * y1 - x1 * y2;
 	}
-	void SetLine1(long long a, long long b, long long c) {
+	void SetLine1(double a, double b, double c) {
 		A = a;
 		B = b;
 		C = c;
@@ -35,9 +36,9 @@ public:
 
 	//求两条直线的交点，输入的两条直线不平行
 	pair<double,double> getInterSect(Line line) {
-		long long x = line.C * B - C * line.B;
-		long long y = C * line.A - line.C * A;
-		long long m = A * line.B - line.A * B;
+		double x = line.C * B - C * line.B;
+		double y = C * line.A - line.C * A;
+		double m = A * line.B - line.A * B;
 		double x_real = double(x) / m;
 		double y_real = double(y) / m;
 		pair<double, double> intersection;
@@ -64,67 +65,73 @@ public:
 		x = to_string(A) + "x+" + to_string(B) + "y+" + to_string(C) + "=0";
 		return x;
 	}
-	long long getA() {
+	double getA() {
 		return A;
 	}
-	long long getB() {
+	double getB() {
 		return B;
 	}
-	long long getC() {
+	double getC() {
 		return C;
 	}
 };
 
 extern map<pair<double, double>, int> point2count;
+extern set<pair<double, double>> pointss;
 class Circle {
 private:
-	long long x0, y0, r0;
+	double x0, y0, r0;
 public:
-	void setCircle(long long x, long long y, long long r) {
+	void setCircle(double x, double y, double r) {
 		x0 = x;
 		y0 = y;
 		r0 = r;
 	}
 	double getDistance(Line line) {
-		long long A = line.getA();
-		long long B = line.getB();
-		long long C = line.getC();
+		double A = line.getA();
+		double B = line.getB();
+		double C = line.getC();
 		double dis = (double)(A * x0 + B * y0 + C) / sqrt(A * A + B * B);
 		return abs(dis);
 	}
 	//求圆与直线的交点
 	void getIntersectWithLine(Line line) {
-		long long A = line.getA();
-		long long B = line.getB();
-		long long C = line.getC();
+		double A = line.getA();
+		double B = line.getB();
+		double C = line.getC();
 		Line line_s;
+		//过圆心作直线的垂线，求出垂足。
 		line_s.SetLine1(B, -A, A * y0 - B * x0);
 		double dis = getDistance(line);
 		pair<double, double> point = line_s.getInterSect(line);
+		//求交点
 		if (dis < r0) {
 			double times = sqrt((double)r0 * r0 - dis * dis);
 			pair<double, double> point1;
 			pair<double, double> point2;
 			pair<double, double> d;
+			//求直线的单位向量
 			d.first = (double)(B) / sqrt(A * A + B * B);
 			d.second = -(double)(A) / sqrt(A * A + B * B);
+			//垂足的坐标加上：单位向量对应坐标与垂足到交点的距离。得到交点坐标
 			point1.first = point.first + d.first * times;
 			point1.second = point.second + d.second * times;
 			point2.first = point.first - d.first * times;
 			point2.second = point.second - d.second * times;
 			//printf("%lf %lf %lf %lf\n", point1.first, point1.second, point2.first, point2.second);
-			if (point2count.count(point1) < 1) {
-				point2count.insert(pair<pair<double, double>, int>(point1, 1));
-			}
-			if (point2count.count(point2) < 1) {
-				point2count.insert(pair<pair<double, double>, int>(point2, 1));
-			}
+			//point2count.insert(pair<pair<double, double>, int>(point1, 1));
+			//point2count[point1] = 1;
+			pointss.insert(point1);
+			//point2count.insert(pair<pair<double, double>, int>(point2, 1));
+			//point2count[point2] = 1;
+			pointss.insert(point2);
+			
 		}
 		else if (dis == r0) {
 			printf("%lf %lf\n", point.first, point.second);
-			if (point2count.count(point) < 1) {
-				point2count.insert(pair<pair<double, double>, int>(point, 1));
-			}
+			//point2count.insert(pair<pair<double, double>, int>(point, 1));
+			//point2count[point] = 1;
+			pointss.insert(point);
 		}
 		else {
 			return;
@@ -133,9 +140,9 @@ public:
 	//
 	void getIntersectWithCirc(Circle circ1) {
 		//printf("该圆的半径：%lld\n", r0);
-		long long x1 = circ1.x0;
-		long long y1 = circ1.y0;
-		long long r1 = circ1.r0;
+		double x1 = circ1.x0;
+		double y1 = circ1.y0;
+		double r1 = circ1.r0;
 		//圆心距离
 		double d = sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1));
 		if (d <= 0 || d > (double)r1 + r0 || d < abs((double)r0 - r1)) { 
