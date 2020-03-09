@@ -10,10 +10,17 @@
 #include<set>
 #include<vector>
 #include<cmath>
+#include<unordered_set>
 
 #define MAXSLOPE 17373524.2
 using namespace std;
-
+class Hash_pair {
+public:
+	size_t operator()(const pair<double, double>& pr)const
+	{
+		return hash<double>()(pr.first * 2 + pr.second);
+	}
+};
 class Line {
 private:
 	//Ax + By + C = 0;
@@ -76,8 +83,7 @@ public:
 	}
 };
 
-extern map<pair<double, double>, int> point2count;
-extern set<pair<double, double>> pointss;
+extern unordered_set<pair<double, double>,Hash_pair> pointu_set;
 class Circle {
 private:
 	double x0, y0, r0;
@@ -119,19 +125,15 @@ public:
 			point2.first = point.first - d.first * times;
 			point2.second = point.second - d.second * times;
 			//printf("%lf %lf %lf %lf\n", point1.first, point1.second, point2.first, point2.second);
-			//point2count.insert(pair<pair<double, double>, int>(point1, 1));
-			//point2count[point1] = 1;
-			pointss.insert(point1);
-			//point2count.insert(pair<pair<double, double>, int>(point2, 1));
-			//point2count[point2] = 1;
-			pointss.insert(point2);
-			
+			//pointss.insert(point1);
+			pointu_set.insert(point1);
+			//pointss.insert(point2);
+			pointu_set.insert(point2);
 		}
 		else if (dis == r0) {
 			printf("%lf %lf\n", point.first, point.second);
-			//point2count.insert(pair<pair<double, double>, int>(point, 1));
-			//point2count[point] = 1;
-			pointss.insert(point);
+			//pointss.insert(point);
+			pointu_set.insert(point);
 		}
 		else {
 			return;
@@ -146,9 +148,6 @@ public:
 		//Ô²ÐÄ¾àÀë
 		double d = sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1));
 		if (d <= 0 || d > (double)r1 + r0 || d < abs((double)r0 - r1)) { 
-			//printf("%lf\n", d);
-			//printf("%lld %lld\n", r1, r0);
-			//printf("1\n");
 			return;
 		};
 		Line line1;

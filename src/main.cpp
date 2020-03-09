@@ -7,12 +7,14 @@
 #include<vector>
 #include<cmath>
 #include<set>
+#include<unordered_set>
 #include "line.h"
 using namespace std;
-map<pair<double, double>, int> point2count;
 set<pair<double, double>> pointss;
+unordered_set<pair<double, double>,Hash_pair> pointu_set;
 vector<Line> lines;
 vector<Circle> circles;
+
 int main(int argc, char* argv[]) {
 	ifstream in_file;
 	ofstream out_file;
@@ -25,8 +27,10 @@ int main(int argc, char* argv[]) {
 			out_file.open(argv[i+1]);
 		}
 	}
-	//in_file.open("input6.txt");
-	//out_file.open("output.txt");
+	/*
+	in_file.open("input6.txt");
+	out_file.open("output.txt");
+	*/
 	int n;
 	in_file >> n;
 	for (i = 0; i < n; ++i) {
@@ -41,10 +45,9 @@ int main(int argc, char* argv[]) {
 				if (line.isParallel(it)) 
 					continue;
 				pair<double, double> point = it.getInterSect(line);
-				//printf("直线与直线交点：%lf %lf\n", point.first, point.second);
-				//point2count.insert(pair<pair<double, double>, int>(point, 1));
 				//point2count[point] = 1;
-				pointss.insert(point);
+				//pointss.insert(point);
+				pointu_set.insert(point);
 			}
 			for (auto it : circles) {
 				it.getIntersectWithLine(line);
@@ -65,8 +68,13 @@ int main(int argc, char* argv[]) {
 			circles.push_back(circ);
 		}
 	}
-	//printf("%d\n", point2count.size());
-	printf("%d\n", pointss.size());
-	out_file << pointss.size();
-	//out_file << point2count.size();
+	//printf("%d\n", pointss.size());
+	//out_file << pointss.size();
+	printf("%d\n", pointu_set.size());
+	/*
+	for (auto it : pointu_set) {
+		printf("%lf %lf\n", it.first, it.second);
+	}
+	*/
+	out_file << pointu_set.size();
 }
