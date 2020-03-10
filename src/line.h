@@ -24,7 +24,7 @@ class Hash_pair {
 public:
 	size_t operator()(const pair<double, double>& pr)const
 	{
-		return hash<double>()(pr.first * 2 + pr.second);
+		return hash<float>()(pr.first) ^ hash<float>()(pr.second);
 	}
 	
 };
