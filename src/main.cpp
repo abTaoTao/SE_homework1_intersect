@@ -11,7 +11,8 @@
 #include "line.h"
 using namespace std;
 set<pair<double, double>> pointss;
-unordered_set<pair<double, double>,Hash_pair> pointu_set;
+
+unordered_set<pair<double, double>,Hash_pair,equals> pointu_set;
 vector<Line> lines;
 vector<Circle> circles;
 
@@ -27,10 +28,8 @@ int main(int argc, char* argv[]) {
 			out_file.open(argv[i+1]);
 		}
 	}
-	/*
-	in_file.open("input2.txt");
-	out_file.open("output.txt");
-	*/
+	//in_file.open("input.txt");
+	//out_file.open("output.txt");
 	int n;
 	in_file >> n;
 	for (i = 0; i < n; ++i) {

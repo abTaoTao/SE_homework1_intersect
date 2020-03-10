@@ -14,10 +14,12 @@
 #define eps 1e-12
 #define MAXSLOPE 17373524.2
 using namespace std;
-bool operator==(const pair<double, double>& a, const pair<double, double>& b) {
-	return fabs(a.first - b.first) < eps && fabs(a.second - b.second) < eps;
-}
-
+struct equals {
+	bool operator()(const pair<double, double>& a, const pair<double, double>& b) const
+	{
+		return fabs(a.first - b.first) < eps && fabs(a.second - b.second) < eps;
+	}
+};
 class Hash_pair {
 public:
 	size_t operator()(const pair<double, double>& pr)const
@@ -88,7 +90,7 @@ public:
 	}
 };
 extern set<pair<double, double>> pointss;
-extern unordered_set<pair<double, double>,Hash_pair> pointu_set;
+extern unordered_set<pair<double, double>,Hash_pair,equals> pointu_set;
 class Circle {
 private:
 	double x0, y0, r0;
@@ -124,13 +126,13 @@ public:
 			pair<double, double> point2;
 			pair<double, double> d;
 			//求直线的单位向量
-			d.first = (double)(B)  * times / sqrt((double)A * A + B * B);
-			d.second = -(double)(A) * times / sqrt((double)A * A + B * B);
+			d.first = (double)(B)   / sqrt((double)A * A + B * B);
+			d.second = -(double)(A)  / sqrt((double)A * A + B * B);
 			//垂足的坐标加上：单位向量对应坐标与垂足到交点的距离。得到交点坐标
-			point1.first = point.first - d.first;
-			point1.second = point.second - d.second ;
-			point2.first = point.first + d.first;
-			point2.second = point.second + d.second;
+			point1.first = point.first - d.first * times;
+			point1.second = point.second - d.second * times;
+			point2.first = point.first + d.first * times;
+			point2.second = point.second + d.second * times;
 			//printf("%.22lf %.22lf %.22lf %.22lf\n", point1.first, point1.second, point2.first, point2.second);
 			//pointss.insert(point1);
 			//printf("%d %d\n", pointu_set.count(point1), pointu_set.count(point2));
