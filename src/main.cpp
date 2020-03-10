@@ -9,7 +9,6 @@
 #include<set>
 #include<unordered_set>
 #include "line.h"
-
 using namespace std;
 set<pair<double, double>> pointss;
 unordered_set<pair<double, double>,Hash_pair> pointu_set;
@@ -29,7 +28,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	/*
-	in_file.open("input6.txt");
+	in_file.open("input2.txt");
 	out_file.open("output.txt");
 	*/
 	int n;
@@ -46,7 +45,6 @@ int main(int argc, char* argv[]) {
 				if (line.isParallel(it)) 
 					continue;
 				pair<double, double> point = it.getInterSect(line);
-				//point2count[point] = 1;
 				//pointss.insert(point);
 				pointu_set.insert(point);
 			}
@@ -72,10 +70,8 @@ int main(int argc, char* argv[]) {
 	//printf("%d\n", pointss.size());
 	//out_file << pointss.size();
 	printf("%d\n", pointu_set.size());
-	/*
-	for (auto it : pointu_set) {
+	/*for (auto it : pointu_set) {
 		printf("%lf %lf\n", it.first, it.second);
-	}
-	*/
+	}*/
 	out_file << pointu_set.size();
 }

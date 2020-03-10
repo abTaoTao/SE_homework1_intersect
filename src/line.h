@@ -11,15 +11,20 @@
 #include<vector>
 #include<cmath>
 #include<unordered_set>
-
+#define eps 1e-12
 #define MAXSLOPE 17373524.2
 using namespace std;
+bool operator==(const pair<double, double>& a, const pair<double, double>& b) {
+	return fabs(a.first - b.first) < eps && fabs(a.second - b.second) < eps;
+}
+
 class Hash_pair {
 public:
 	size_t operator()(const pair<double, double>& pr)const
 	{
 		return hash<double>()(pr.first * 2 + pr.second);
 	}
+	
 };
 class Line {
 private:
@@ -82,7 +87,7 @@ public:
 		return C;
 	}
 };
-
+extern set<pair<double, double>> pointss;
 extern unordered_set<pair<double, double>,Hash_pair> pointu_set;
 class Circle {
 private:
@@ -106,33 +111,34 @@ public:
 		double B = line.getB();
 		double C = line.getC();
 		Line line_s;
+		vector<pair<double, double>> points;
 		//过圆心作直线的垂线，求出垂足。
 		line_s.SetLine1(B, -A, A * y0 - B * x0);
 		double dis = getDistance(line);
 		pair<double, double> point = line_s.getInterSect(line);
 		//求交点
 		if (dis < r0) {
+			//printf("%d\n", pointu_set.size());
 			double times = sqrt((double)r0 * r0 - dis * dis);
 			pair<double, double> point1;
 			pair<double, double> point2;
 			pair<double, double> d;
 			//求直线的单位向量
-			d.first = (double)(B) / sqrt(A * A + B * B);
-			d.second = -(double)(A) / sqrt(A * A + B * B);
+			d.first = (double)(B)  * times / sqrt((double)A * A + B * B);
+			d.second = -(double)(A) * times / sqrt((double)A * A + B * B);
 			//垂足的坐标加上：单位向量对应坐标与垂足到交点的距离。得到交点坐标
-			point1.first = point.first + d.first * times;
-			point1.second = point.second + d.second * times;
-			point2.first = point.first - d.first * times;
-			point2.second = point.second - d.second * times;
-			//printf("%lf %lf %lf %lf\n", point1.first, point1.second, point2.first, point2.second);
+			point1.first = point.first - d.first;
+			point1.second = point.second - d.second ;
+			point2.first = point.first + d.first;
+			point2.second = point.second + d.second;
+			//printf("%.22lf %.22lf %.22lf %.22lf\n", point1.first, point1.second, point2.first, point2.second);
 			//pointss.insert(point1);
+			//printf("%d %d\n", pointu_set.count(point1), pointu_set.count(point2));
 			pointu_set.insert(point1);
-			//pointss.insert(point2);
 			pointu_set.insert(point2);
+			//printf("%d %d\n", pointu_set.count(point1), pointu_set.count(point2));
 		}
 		else if (dis == r0) {
-			printf("%lf %lf\n", point.first, point.second);
-			//pointss.insert(point);
 			pointu_set.insert(point);
 		}
 		else {
